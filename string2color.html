@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head><meta charset="utf-8">
+    <title>stirng to color</title>
+    </head>
+    <body>
+        <div id="display" style="width: 100px; height: 100px;"></div>
+        <input id="colorString" placeholder="color string" type="text" value="" />
+        <script>
+            var inputBox = document.getElementById('colorString');
+            var displayBox = document.getElementById('display');
+            inputBox.addEventListener('change', function () {
+                var str = inputBox.value;
+                var color = stringToColorHash(str);
+                console.log(color);
+                displayBox.style.backgroundColor = color; 
+            })
+            
+
+            function stringToColorHash(str) {
+               
+
+                // 使用类似djb2的哈希算法生成32位无符号整数
+                let hash_r = 5381315556;
+                let hash_g = 6345125315;
+                let hash_b = 8463544874;
+
+                let r = generateSingleColorHash(str, hash_r);
+                let g = generateSingleColorHash(str, hash_g);
+                let b = generateSingleColorHash(str, hash_b);
+                return `rgb(${r}, ${g}, ${b})`
+                function generateSingleColorHash(string, hash){
+                    const min = 16; 
+                    const max = 200;
+                    const range = max - min;
+                    for (let i = 0; i < str.length; i++) {
+                        hash = (hash * 33) ^ str.charCodeAt(i);
+                    }
+                    hash = hash >>> 0; // 确保结果为无符号32位整数
+
+                    // 将哈希值映射到指定范围
+                    const ratio = hash / 0xFFFFFFFF; // 转换为0~1之间的比例
+                    const value = Math.floor(ratio * range) + min;
+
+                    return value;
+                }
+                
+            }
+        </script>
+    </body>
+</html>
